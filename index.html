@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regex Highlighter</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            /* padding: 20px; */
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        textarea {
+            resize: horizontal;
+
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            height: 100%;
+            overflow: auto;
+            width: 200px;
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .sidebar button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .sidebar button:hover {
+            background-color: #45a049;
+        }
+
+        #highlightedText {
+            flex: 1;
+            overflow: auto;
+            position: absolute;
+            color: transparent;
+            white-space: pre-wrap;
+            z-index: 1;
+            pointer-events: none;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        #textInput {
+            flex: 1;
+            overflow: auto;
+            width: 50vw;
+            height: 100%;
+            font-size: 16px;
+            font-family: inherit;
+            z-index: 2;
+            position: relative;
+            background: none;
+            caret-color: black;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        #groupsOutput {
+            flex: 1;
+            margin-left: 20px;
+            font-size: 14px;
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            height: 100%;
+            overflow: auto;
+        }
+
+        .group {
+            margin-bottom: 5px;
+        }
+
+        pre {
+            margin: 0;
+            margin-top: 5px;
+            padding: 10px;
+        }
+
+        .highlight {
+            background-color: red;
+        }
+
+        #regexInputContainer {
+            height: 8em;
+        }
+
+        #textContainer {
+            height: calc(100% - 8em);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <button onclick="loadTask('Task1.txt')">Load Task 1</button>
+            <button onclick="loadTask('Task2.txt')">Load Task 2</button>
+        </div>
+        <div>
+            <div id="regexInputContainer">
+                <label for="regexInput">Enter your regex:</label>
+                <input type="text" id="regexInput" placeholder="Enter regex here">
+                <div style="height: 2em;"></div>
+                <label for="textInput">Enter your text:</label>
+            </div>
+            <div id="textContainer">
+                <pre id="highlightedText"></pre>
+                <textarea id="textInput" placeholder="Enter text here"></textarea>
+            </div>
+        </div>
+        <div id="groupsOutput"></div>
+    </div>
+    <script>
+        const regexInput = document.getElementById('regexInput');
+        const textInput = document.getElementById('textInput');
+        const highlightedText = document.getElementById('highlightedText');
+        const groupsOutput = document.getElementById('groupsOutput');
+
+        function highlightMatches() {
+            const regexString = regexInput.value;
+            const text = textInput.value;
+
+            try {
+                const regex = new RegExp(regexString, 'g');
+                const highlighted = text.replace(regex, match => `<span class="highlight">${match}</span>`);
+                highlightedText.innerHTML = highlighted;
+
+                // Extract and display capturing groups
+                const matches = [...text.matchAll(regex)];
+                groupsOutput.innerHTML = matches.map((match, index) => {
+                    const groups = match.slice(1).map((group, i) => `<span class="group">Group ${i + 1}: ${group || 'N/A'}</span>`).join('<br>');
+                    return `<div><strong>Match ${index + 1}: ${match[0]}</strong><br>${groups}</div>`;
+                }).join('<hr>');
+            } catch (e) {
+                highlightedText.innerHTML = text;
+                groupsOutput.innerHTML = '<span style="color: red;">Invalid regex</span>';
+            }
+        }
+
+        regexInput.addEventListener('input', highlightMatches);
+        textInput.addEventListener('input', () => {
+            highlightedText.textContent = textInput.value;
+            highlightMatches();
+        });
+
+        textInput.addEventListener('scroll', () => {
+            highlightedText.scrollTop = textInput.scrollTop;
+            highlightedText.scrollLeft = textInput.scrollLeft;
+        });
+
+        function loadTask(taskFile) {
+            fetch(`tasks/${taskFile}`)
+                .then(response => response.text())
+                .then(data => {
+                    textInput.value = data;
+                    highlightedText.textContent = data;
+                    highlightMatches();
+                })
+                .catch(error => console.error('Error loading task:', error));
+        }
+    </script>
+</body>
+
+</html>
