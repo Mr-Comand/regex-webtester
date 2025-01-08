@@ -9,7 +9,6 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            /* padding: 20px; */
             background-color: #f4f4f9;
             color: #333;
         }
@@ -102,6 +101,8 @@
             border-radius: 4px;
             padding: 10px;
             box-sizing: border-box;
+            min-width: 218px;
+            max-width: 80vw;
         }
 
         #groupsOutput {
@@ -137,6 +138,7 @@
 
         #textContainer {
             height: calc(100% - 8em);
+            overflow: hidden;
         }
     </style>
 </head>
@@ -155,8 +157,10 @@
                 <label for="textInput">Enter your text:</label>
             </div>
             <div id="textContainer">
-                <pre id="highlightedText"></pre>
-                <textarea id="textInput" placeholder="Enter text here"></textarea>
+                <div style="position: relative; height: 100%;">
+                    <pre id="highlightedText"></pre>
+                    <textarea id="textInput" placeholder="Enter text here" wrap="off"></textarea>
+                </div>
             </div>
         </div>
         <div id="groupsOutput"></div>
@@ -166,7 +170,14 @@
         const textInput = document.getElementById('textInput');
         const highlightedText = document.getElementById('highlightedText');
         const groupsOutput = document.getElementById('groupsOutput');
+        textInput.addEventListener('scroll', syncScroll);
 
+        function syncScroll(event) {
+            if (event.target === textInput) {
+                highlightedText.style.marginTop = -textInput.scrollTop+"px";
+                highlightedText.style.marginLeft = -textInput.scrollLeft+"px";
+            } 
+        }
         function highlightMatches() {
             const regexString = regexInput.value;
             const text = textInput.value;
