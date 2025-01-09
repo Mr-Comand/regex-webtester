@@ -54,7 +54,7 @@ function checkSolution() {
     const userRegex = regexInput.value;
     testCasesContainer.innerHTML = '';
     let task = taskData
-    if (!task) { return }
+    if (!task || !task.testcases) { return }
 
     let output = '';
 
