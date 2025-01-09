@@ -4,18 +4,31 @@
     "testcases": [
         {
             "input": "asd\naaaaa\nasD",
-            "output": [{
-                "match": "asd",
-                "Groups": ["d"]
-            },
-            {
-                "match": "asD",
-                "Groups": ["N/A"]
-            }]
+            "output": [
+                {
+                    "match": "asd",
+                    "Groups": [
+                        "d"
+                    ]
+                },
+                {
+                    "match": "asD",
+                    "Groups": [
+                        "N/A"
+                    ]
+                }
+            ]
         },
         {
-            "input": "",
-            "output": []
+            "input": "asD",
+            "output": [
+                {
+                    "match": "asD",
+                    "Groups": [
+                        "N/A"
+                    ]
+                }
+            ]
         },
         {
             "input": "aaaaa",

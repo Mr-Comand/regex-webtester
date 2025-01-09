@@ -1,5 +1,5 @@
 
-// import { Parser } from './parser/javascript.js';
+let taskData = {}
 const regexInput = document.getElementById('regexInput');
 const textInput = document.getElementById('textInput');
 const highlightedText = document.getElementById('highlightedText');
@@ -53,64 +53,71 @@ function highlightTestCaseMatches(testCaseElement, regexString, text) {
 function checkSolution() {
     const userRegex = regexInput.value;
     testCasesContainer.innerHTML = '';
-    fetch('tasks/Task1.json')
-        .then(response => response.json())
-        .then(task => {
-            let output = '';
+    let task = taskData
+    if (!task) { return }
 
-            // Check if regex is the same
-            if (userRegex === task.regex) {
-                output += '<p style="color: green;">Regex is correct</p>';
+    let output = '';
+
+    // Check if regex is the same
+    if (userRegex === task.regex) {
+        output += '<p style="color: green;">Regex is correct</p>';
+    } else {
+        output += '<p style="color: red;">Regex is incorrect</p>';
+    }
+
+    // Check each test case
+    task.testcases.forEach((testcase, index) => {
+        const userMatches = [...testcase.input.matchAll(new RegExp(userRegex, 'g'))];
+        const expectedMatches = testcase.output;
+
+        let testCaseResult = `<div class="testcase"><label>Test Case ${index + 1}:</label><pre>${testcase.input}</pre><div class="result">`;
+        let allFine = true;
+        let testCaseResults = "";
+        expectedMatches.forEach((expectedMatch, matchIndex) => {
+            const userMatch = userMatches[matchIndex];
+            if (userMatch && userMatch[0] === expectedMatch.match) {
+                testCaseResults += `<p style="color: green;">Match ${matchIndex + 1} is correct.</p>`;
             } else {
-                output += '<p style="color: red;">Regex is incorrect</p>';
+                testCaseResults += `<p style="color: red;">Match ${matchIndex + 1} is ${userMatch|| 'N/A'} and should be ${expectedMatch.match}</p>`;
+                allFine = false;
             }
 
-            // Check each test case
-            task.testcases.forEach((testcase, index) => {
-                const userMatches = [...testcase.input.matchAll(new RegExp(userRegex, 'g'))];
-                const expectedMatches = testcase.output;
-
-                let testCaseResult = `<div class="testcase"><label>Test Case ${index + 1}:</label><pre>${testcase.input}</pre><div class="result">`;
-
-                expectedMatches.forEach((expectedMatch, matchIndex) => {
-                    const userMatch = userMatches[matchIndex];
-                    if (userMatch && userMatch[0] === expectedMatch.match) {
-                        testCaseResult += `<p style="color: green;">Match ${matchIndex + 1} is correct: ${userMatch[0]}</p>`;
-                    } else {
-                        testCaseResult += `<p style="color: red;">Match ${matchIndex + 1} is incorrect</p>`;
-                    }
-
-                    // Check groups
-                    expectedMatch.Groups.forEach((expectedGroup, groupIndex) => {
-                        const userGroup = userMatch ? userMatch[groupIndex + 1] : undefined;
-                        if ((userGroup || 'N/A') === expectedGroup) {
-                            testCaseResult += `<p style="color: green;">Group ${groupIndex + 1} is correct: ${userGroup || 'N/A'}</p>`;
-                        } else {
-                            testCaseResult += `<p style="color: red;">Group ${groupIndex + 1} is incorrect</p>`;
-                        }
-                    });
-                });
-
-                testCaseResult += '</div></div>';
-                output += testCaseResult;
-
-                // Highlight matches in the test case
-                const testCaseElement = document.createElement('div');
-                testCaseElement.className = 'testcase';
-                testCaseElement.innerHTML = testCaseResult;
-                highlightTestCaseMatches(testCaseElement, userRegex, testcase.input);
-                testCasesContainer.appendChild(testCaseElement);
+            // Check groups
+            expectedMatch.Groups.forEach((expectedGroup, groupIndex) => {
+                const userGroup = userMatch ? userMatch[groupIndex + 1] : undefined;
+                if ((userGroup || 'N/A') === expectedGroup) {
+                    testCaseResults += `<p style="color: green;">↳Group ${groupIndex + 1} is correct.</p>`;
+                } else {
+                    testCaseResults += `<p style="color: red;">↳Group ${groupIndex + 1} is ${userGroup || 'N/A'} and should be ${expectedGroup}</p>`;
+                    allFine = false;
+                }
             });
+        });
+        if (allFine) {
+            testCaseResult += `<p style="color: green;" class="allfine">All matches are correct</p></div>`;
+        } else {
+            testCaseResult += testCaseResults;
+        }
+        testCaseResult += '</div></div>';
+        output += testCaseResult;
+
+        // Highlight matches in the test case
+        const testCaseElement = document.createElement('div');
+        testCaseElement.className = 'testcase';
+        testCaseElement.innerHTML = testCaseResult;
+        highlightTestCaseMatches(testCaseElement, userRegex, testcase.input);
+        testCasesContainer.appendChild(testCaseElement);
+    });
 
 
-        })
-        .catch(error => console.error('Error checking solution:', error));
+
 }
 
 function loadTask(taskFile) {
     fetch(`tasks/${taskFile}`)
         .then(response => response.json())
         .then(task => {
+            taskData = task;
             regexInput.value = task.regex;
             textInput.value = '';
             highlightedText.textContent = '';
