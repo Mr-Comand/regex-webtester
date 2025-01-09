@@ -1,4 +1,3 @@
-
 let taskData = {}
 const regexInput = document.getElementById('regexInput');
 const textInput = document.getElementById('textInput');
@@ -53,7 +52,7 @@ function highlightTestCaseMatches(testCaseElement, regexString, text) {
 function checkSolution() {
     const userRegex = regexInput.value;
     testCasesContainer.innerHTML = '';
-    let task = taskData
+    let task = taskData;
     if (!task || !task.testcases) { return }
 
     let output = '';
@@ -70,7 +69,7 @@ function checkSolution() {
         const userMatches = [...testcase.input.matchAll(new RegExp(userRegex, 'g'))];
         const expectedMatches = testcase.output;
 
-        let testCaseResult = `<div class="testcase"><label>Test Case ${index + 1}:</label><pre>${testcase.input}</pre><div class="result">`;
+        let testCaseResult = `<div class="testcase"><label>Test Case ${index + 1}:</label><pre>${testcase.input}</pre><button class="copy-btn">Copy to Text Input</button><div class="result">`;
         let allFine = true;
         let testCaseResults = "";
         expectedMatches.forEach((expectedMatch, matchIndex) => {
@@ -78,7 +77,7 @@ function checkSolution() {
             if (userMatch && userMatch[0] === expectedMatch.match) {
                 testCaseResults += `<p style="color: green;">Match ${matchIndex + 1} is correct.</p>`;
             } else {
-                testCaseResults += `<p style="color: red;">Match ${matchIndex + 1} is ${userMatch|| 'N/A'} and should be ${expectedMatch.match}</p>`;
+                testCaseResults += `<p style="color: red;">Match ${matchIndex + 1} is ${userMatch || 'N/A'} and should be ${expectedMatch.match}</p>`;
                 allFine = false;
             }
 
@@ -109,8 +108,15 @@ function checkSolution() {
         testCasesContainer.appendChild(testCaseElement);
     });
 
-
-
+    // Add event listeners to copy buttons
+    document.querySelectorAll('.copy-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const preElement = event.target.previousElementSibling;
+            textInput.value = preElement.textContent;
+            highlightedText.textContent = preElement.textContent;
+            highlightMatches();
+        });
+    });
 }
 
 function loadTask(taskFile) {
