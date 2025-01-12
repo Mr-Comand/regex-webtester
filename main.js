@@ -127,13 +127,25 @@ function checkSolution() {
 }
 
 function loadTask(taskFile) {
-    fetch(`tasks/${taskFile}`)
+    fetch(`${taskFile}`)
         .then(response => response.json())
         .then(task => {
             taskData = task;
             regexInput.value = task.regex;
-            textInput.value = '';
-            highlightedText.textContent = '';
+            if (task.text) {
+                textInput.value = task.text;
+                highlightedText.textContent = ''
+            };
+            if (task.textlink) {
+                fetch(task.textlink)
+                    .then(response => response.text())
+                    .then(text => {
+                        textInput.value = text;
+                        highlightedText.textContent = text;
+                        highlightMatches();
+                    })
+                    .catch(error => console.error('Error loading text from link:', error));
+            };
             let valid = highlightMatches();
             if (valid) {
                 checkSolution();

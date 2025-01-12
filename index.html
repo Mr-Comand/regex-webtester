@@ -11,8 +11,21 @@
 <body>
     <div class="container">
         <div class="sidebar">
-            <button onclick="loadTask('Task1.json')">Load Task 1</button>
-            <button onclick="loadTask('Task2.json')">Load Task 2</button>
+            <script>
+                let tasks = []; // Add your tasks here
+                fetch('/tasks/tasklist.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        tasks = data.tasks;
+                        tasks.forEach(task => {
+                            const button = document.createElement('button');
+                            button.textContent = `${task[1]}`;
+                            button.onclick = () => loadTask(task[0]);
+                            document.querySelector('.sidebar').appendChild(button);
+                        });
+                    })
+                    .catch(error => console.error('Error loading tasks:', error));
+            </script>
         </div>
         <div id="main">
             <div id="regexInputContainer">
