@@ -26,14 +26,43 @@ function highlightMatches() {
         // Extract and display capturing groups
         const matches = [...text.matchAll(regex)];
         groupsOutput.innerHTML = matches.map((match, index) => {
-            const groups = match.slice(1).map((group, i) => `<span class="group">Group ${i + 1}: ${group || 'N/A'}</span>`).join('<br>');
-            return `<div><strong>Match ${index + 1}: ${match[0]}</strong><br>${groups}</div>`;
+            const groups = match.slice(1).map((group, i) => `<span class="group"  onclick="jumpToGroup(${index}, ${i + 1})">Group ${i + 1}: ${group || 'N/A'}</span>`).join('<br>');
+            return `<div><strong onclick="jumpToMatch(${index})">Match ${index + 1}: ${match[0]}</strong><br>${groups}</div>`;
         }).join('<hr>');
         return true;
     } catch (e) {
         highlightedText.innerHTML = text;
-        groupsOutput.innerHTML = '<span style="color: red;">Invalid regex</span>';
+        groupsOutput.innerHTML = '<span style="color: red;" class="error">Invalid regex</span>';
         return false;
+    }
+}
+function jumpToMatch(index) {
+    const regexString = regexInput.value;
+    const text = textInput.value;
+    const regex = new RegExp(regexString, 'g');
+    const matches = [...text.matchAll(regex)];
+    if (matches[index]) {
+        const match = matches[index];
+        const start = match.index;
+        const end = start + match[0].length;
+        textInput.focus();
+        textInput.setSelectionRange(start, end);
+        textInput.scrollTop = textInput.scrollHeight * (start / text.length);
+    }
+}
+function jumpToGroup(matchIndex, groupIndex) {
+    const regexString = regexInput.value;
+    const text = textInput.value;
+    const regex = new RegExp(regexString, 'g');
+    const matches = [...text.matchAll(regex)];
+    if (matches[matchIndex] && matches[matchIndex][groupIndex]) {
+        const match = matches[matchIndex];
+        const group = match[groupIndex];
+        const start = match.index + match[0].indexOf(group);
+        const end = start + group.length;
+        textInput.focus();
+        textInput.setSelectionRange(start, end);
+        textInput.scrollTop = textInput.scrollHeight * (start / text.length);
     }
 }
 
