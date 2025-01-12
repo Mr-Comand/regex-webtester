@@ -5,9 +5,9 @@ export default {
 
   setup() {
     if (this.textValue === '^') {
-      this.label = 'Start of line';
+      this.label = 'Start of Input';
     } else {
-      this.label = 'End of line';
+      this.label = 'End of Input';
     }
   }
 };
