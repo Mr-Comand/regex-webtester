@@ -66,32 +66,39 @@ function checkSolution() {
 
     // Check each test case
     task.testcases.forEach((testcase, index) => {
-        const userMatches = [...testcase.input.matchAll(new RegExp(userRegex, 'g'))];
-        const expectedMatches = testcase.output;
+        const userMatches = [...testcase.matchAll(new RegExp(userRegex, 'g'))];
+        const expectedMatches = [...testcase.matchAll(new RegExp(task.regex, 'g'))];
 
-        let testCaseResult = `<div class="testcase"><label>Test Case ${index + 1}:</label><pre>${testcase.input}</pre><button class="copy-btn">Copy to Text Input</button><div class="result">`;
+        let testCaseResult = `<div class="testcase"><label>Test Case ${index + 1}:</label><pre>${testcase}</pre><button class="copy-btn">Copy to Text Input</button><div class="result">`;
         let allFine = true;
         let testCaseResults = "";
-        expectedMatches.forEach((expectedMatch, matchIndex) => {
-            const userMatch = userMatches[matchIndex];
-            if (userMatch && userMatch[0] === expectedMatch.match) {
-                testCaseResults += `<p style="color: green;">Match ${matchIndex + 1} is correct.</p>`;
-            } else {
-                testCaseResults += `<p style="color: red;">Match ${matchIndex + 1} is ${userMatch || 'N/A'} and should be ${expectedMatch.match}</p>`;
-                allFine = false;
-            }
 
-            // Check groups
-            expectedMatch.Groups.forEach((expectedGroup, groupIndex) => {
-                const userGroup = userMatch ? userMatch[groupIndex + 1] : undefined;
-                if ((userGroup || 'N/A') === expectedGroup) {
-                    testCaseResults += `<p style="color: green;">↳Group ${groupIndex + 1} is correct.</p>`;
+        if (userMatches.length === expectedMatches.length) {
+            userMatches.forEach((userMatch, matchIndex) => {
+                const expectedMatch = expectedMatches[matchIndex];
+                if (userMatch[0] === expectedMatch[0]) {
+                    testCaseResults += `<p style="color: green;">Match ${matchIndex + 1} is correct.</p>`;
                 } else {
-                    testCaseResults += `<p style="color: red;">↳Group ${groupIndex + 1} is ${userGroup || 'N/A'} and should be ${expectedGroup}</p>`;
+                    testCaseResults += `<p style="color: red;">Match ${matchIndex + 1} is ${userMatch[0]} and should be ${expectedMatch[0]}</p>`;
                     allFine = false;
                 }
+
+                // Check groups
+                expectedMatch.slice(1).forEach((expectedGroup, groupIndex) => {
+                    const userGroup = userMatch[groupIndex + 1];
+                    if ((userGroup || 'N/A') === (expectedGroup || 'N/A')) {
+                        testCaseResults += `<p style="color: green;">↳Group ${groupIndex + 1} is correct.</p>`;
+                    } else {
+                        testCaseResults += `<p style="color: red;">↳Group ${groupIndex + 1} is ${userGroup || 'N/A'} and should be ${expectedGroup}</p>`;
+                        allFine = false;
+                    }
+                });
             });
-        });
+        } else {
+            testCaseResults += `<p style="color: red;">Number of matches is incorrect. Expected ${expectedMatches.length} but got ${userMatches.length}</p>`;
+            allFine = false;
+        }
+
         if (allFine) {
             testCaseResult += `<p style="color: green;" class="allfine">All matches are correct</p></div>`;
         } else {
@@ -104,7 +111,7 @@ function checkSolution() {
         const testCaseElement = document.createElement('div');
         testCaseElement.className = 'testcase';
         testCaseElement.innerHTML = testCaseResult;
-        highlightTestCaseMatches(testCaseElement, userRegex, testcase.input);
+        highlightTestCaseMatches(testCaseElement, userRegex, testcase);
         testCasesContainer.appendChild(testCaseElement);
     });
 

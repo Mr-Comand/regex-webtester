@@ -1,25 +1,9 @@
 {
     "task": "match the string 'asd' or 'asD' and capture the 'd' if it is present",
-    "regex": "as(d)?D?a",
+    "regex": "as(d?D?)",
     "testcases": [
-        {
-            "input": "asd\naaaaa\nasD",
-            "output": [{
-                "match": "asd",
-                "Groups": ["d"]
-            },
-            {
-                "match": "asD",
-                "Groups": ["N/A"]
-            }]
-        },
-        {
-            "input": "",
-            "output": []
-        },
-        {
-            "input": "aaaaa",
-            "output": []
-        }
+        "asd\naaaaa\nasD",
+        "asD",
+        "aaaaa"
     ]
 }
