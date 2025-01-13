@@ -6,6 +6,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Regex Highlighter</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .regexColoring-container {
+            position: relative;
+            display: inline-block;
+            font-family: monospace;
+            width: 100%;
+        }
+
+        .regexColoring-highlight {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            color: black;
+            white-space: pre;
+            pointer-events: none;
+            z-index: 1;
+            font-size: 16px;
+            padding: 10px;
+        }
+
+        .regexColoring-highlight span.match.pair1 {
+            color: #ff7f0e;
+            /* blue */
+        }
+
+        .regexColoring-highlight span.match.pair2 {
+            color: #1f77b4;
+            /* orange */
+        }
+
+        .regexColoring-highlight span.match.pair3 {
+            color: #2ca02c;
+            /* green */
+        }
+
+        .regexColoring-highlight span.match.pair4 {
+            color: #d62728;
+            /* red */
+        }
+
+        .regexColoring-highlight span.match.pair5 {
+            color: #9467bd;
+            /* purple */
+        }
+
+        .regexColoring-highlight span.match.pair6 {
+            color: #8c564b;
+            /* brown */
+        }
+
+        .regexColoring-highlight span.match.pair7 {
+            color: #e377c2;
+            /* pink */
+        }
+
+        .regexColoring-highlight span.match.pair8 {
+            color: #7f7f7f;
+            /* gray */
+        }
+
+        .regexColoring-highlight span.match.pair9 {
+            color: #bcbd22;
+            /* yellow-green */
+        }
+
+        .regexColoring-highlight span.match.pair10 {
+            color: #17becf;
+            /* cyan */
+        }
+
+        .regexColoring-highlight span.escaped {
+            color: #e00ed6;
+            /* pink */
+        }
+
+        .regexColoring-highlight span.quantifier {
+            color: #00a86b;
+            /* green */
+        }
+
+        .regexColoring-highlight span.anchor {
+            color: #0e77e0;
+            /* Dark blue */
+            font-weight: bold;
+        }
+
+        .regexColoring-highlight span.any {
+            color: #0e77e0;
+            /* blue */
+            font-weight: bold;
+
+        }
+
+        .regexColoring-highlight span.alternation {
+            color: #3b1e04;
+            /* Orange */
+        }
+
+        .regexColoring-highlight span.error {
+            background-color: red;
+        }
+
+        .regexColoring-input {
+            position: relative;
+            background: transparent;
+            color: transparent;
+            caret-color: black;
+            z-index: 2;
+            font-family: monospace;
+            border: 1px solid #ccc;
+            padding: 5px;
+            width: 100%;
+        }
+    </style>
 </head>
 
 <body>
@@ -30,7 +146,11 @@
         <div id="main">
             <div id="regexInputContainer">
                 <label for="regexInput">Enter your regex:</label>
-                <input type="text" id="regexInput" placeholder="Enter regex here">
+                <div class="regexColoring-container">
+                    <div class="regexColoring-highlight"></div>
+                    <input class="regexColoring-input" id="regexInput" placeholder="Enter regex here" type="text">
+                </div>
+
                 <div style="height: 2em;"></div>
                 <label for="textInput">Enter your text:</label>
             </div>
@@ -42,7 +162,7 @@
             </div>
             <div id="renderedRegexContainer" style="display: none;">
                 <div class="svg">
-                    <svg id="renderedRegex"  height="0" width="0">
+                    <svg id="renderedRegex" height="0" width="0">
                         <defs>
                             <style type="text/css">
                                 svg {
@@ -132,8 +252,8 @@
     </div>
     <script src="parser/util.js" type="module"></script>
     <script src="parser/javascript.js" type="module" defer></script>
-    <script src="main.js">
-    </script>
+    <script src="main.js"></script>
+    <script src="regexColoring.js" defer></script>
 </body>
 
 </html>
