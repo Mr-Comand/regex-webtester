@@ -41,7 +41,12 @@ function highlightBrackets(text) {
                 }
             }
         } else if (char === '+' || char === '?' || char === '*') {
-            result[i] = `<span class="quantifier">${char}</span>`;
+            const lastChar = text[i - 1] || '';
+            if ( char !== '?' && (lastChar === '+' || lastChar === '?' || lastChar === '*'|| lastChar === '')) {
+                result[i] = `<span class="error">${char}</span>`;
+            } else {
+                result[i] = `<span class="quantifier">${char}</span>`;
+            }
         } else if (char === '{') {
             const closingIndex = text.indexOf('}', i);
             if (closingIndex !== -1) {
