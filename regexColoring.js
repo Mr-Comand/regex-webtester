@@ -1,6 +1,16 @@
 const input = document.querySelector('.regexColoring-input');
 const highlight = document.querySelector('.regexColoring-highlight');
 
+
+
+function syncScrollRegexColoring(event) {
+    if (event.target === input) {
+        highlight.style.marginTop = -input.scrollTop + "px";
+        highlight.style.marginLeft = -input.scrollLeft + "px";
+    }
+}
+input.addEventListener('scroll', syncScrollRegexColoring);
+
 // Function to highlight matching brackets, stars, and escaped characters
 function highlightBrackets(text) {
     const stack = [];
