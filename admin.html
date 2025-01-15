@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regex Highlighter</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .regexColoring-container {
+            position: relative;
+            display: inline-block;
+            font-family: monospace;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .regexColoring-highlight {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            color: black;
+            white-space: pre;
+            pointer-events: none;
+            z-index: 1;
+            font-size: 16px;
+            padding: 10px;
+        }
+
+        .regexColoring-highlight span.match {
+            font-weight: bold;
+        }
+
+        .regexColoring-highlight span.match.pair1 {
+            color: #00aa00;
+
+            /* blue */
+        }
+
+        .regexColoring-highlight span.match.pair2 {
+            color: #1f77b4;
+            /* orange */
+        }
+
+        .regexColoring-highlight span.match.pair3 {
+            color: #ff7f0e;
+            /* green */
+        }
+
+        .regexColoring-highlight span.match.pair4 {
+            color: #d62728;
+            /* red */
+        }
+
+        .regexColoring-highlight span.match.pair5 {
+            color: #9467bd;
+            /* purple */
+        }
+
+        .regexColoring-highlight span.match.pair6 {
+            color: #8c564b;
+            /* brown */
+        }
+
+        .regexColoring-highlight span.match.pair7 {
+            color: #e377c2;
+            /* pink */
+        }
+
+        .regexColoring-highlight span.match.pair8 {
+            color: #7f7f7f;
+            /* gray */
+        }
+
+        .regexColoring-highlight span.match.pair9 {
+            color: #bcbd22;
+            /* yellow-green */
+        }
+
+        .regexColoring-highlight span.match.pair10 {
+            color: #17becf;
+            /* cyan */
+        }
+
+        .regexColoring-highlight span.escaped {
+            color: #e00ed6;
+            /* pink */
+        }
+
+        .regexColoring-highlight span.quantifier {
+            color: #00a86b;
+            /* green */
+        }
+
+        .regexColoring-highlight span.anchor {
+            color: #0e77e0;
+            /* Dark blue */
+            font-weight: bold;
+        }
+
+        .regexColoring-highlight span.any {
+            color: #0e77e0;
+            /* blue */
+            font-weight: bold;
+        }
+
+        .regexColoring-highlight span.anyOf {
+            color: #e0a10e;
+            /* blue */
+            font-weight: bold;
+
+        }
+
+        .regexColoring-highlight span.anyOf.content {
+            color: black;
+            /* blue */
+        }
+
+        .regexColoring-highlight span.alternation {
+            color: #3b1e04;
+            /* Orange */
+        }
+
+        .regexColoring-highlight span.error {
+            background-color: red;
+        }
+
+        .regexColoring-input {
+            position: relative;
+            background: transparent;
+            color: transparent;
+            caret-color: black;
+            z-index: 2;
+            font-family: monospace;
+            border: 1px solid #ccc;
+            padding: 5px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <script>
+                let tasks = []; // Add your tasks here
+                fetch('/tasks/tasklist.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        tasks = data.tasks;
+                        tasks.forEach(task => {
+                            const button = document.createElement('button');
+                            button.textContent = `${task[1]}`;
+                            button.onclick = () => loadTask(task[0]);
+                            document.querySelector('.sidebar').appendChild(button);
+                        });
+                    })
+                    .catch(error => console.error('Error loading tasks:', error));
+            </script>
+        </div>
+        <div id="main">
+            <div id="regexInputContainer">
+                <label for="regexInput">Enter your regex:</label>
+                <div class="regexColoring-container">
+                    <div class="regexColoring-highlight"></div>
+                    <input class="regexColoring-input" id="regexInput" placeholder="Enter regex here" type="text">
+                </div>
+
+                <div style="height: 2em;"><button id="solution">Lösung kopieren</button></div>
+                <label for="textInput">Enter your text:</label>
+            </div>
+            <div id="textContainer">
+                <div style="position: relative; height: 100%;">
+                    <pre id="highlightedText"></pre>
+                    <textarea id="textInput" placeholder="Enter text here" wrap="off"></textarea>
+                </div>
+            </div>
+            <div id="renderedRegexContainer" style="display: none; max-height: 30vh;overflow: auto;">
+                <div class="svg">
+                    <svg id="renderedRegex" height="0" width="0">
+                        <defs>
+                            <style type="text/css">
+                                svg {
+                                    background-color: #fff;
+                                }
+
+                                .root text,
+                                .root tspan {
+                                    font: 12px Arial;
+                                }
+
+                                .root path {
+                                    fill-opacity: 0;
+                                    stroke-width: 2px;
+                                    stroke: #000;
+                                }
+
+                                .root circle {
+                                    fill: #6b6659;
+                                    stroke-width: 2px;
+                                    stroke: #000;
+                                }
+
+                                .anchor text,
+                                .any-character text {
+                                    fill: #fff;
+                                }
+
+                                .anchor rect,
+                                .any-character rect {
+                                    fill: #6b6659;
+                                }
+
+                                .escape text,
+                                .charset-escape text,
+                                .literal text {
+                                    fill: #000;
+                                }
+
+                                .escape rect,
+                                .charset-escape rect {
+                                    fill: #bada55;
+                                }
+
+                                .literal rect {
+                                    fill: #dae9e5;
+                                }
+
+                                .charset .charset-box {
+                                    fill: #cbcbba;
+                                }
+
+                                .subexp .subexp-label tspan,
+                                .charset .charset-label tspan,
+                                .match-fragment .repeat-label tspan {
+                                    font-size: 10px;
+                                }
+
+                                .repeat-label {
+                                    cursor: help;
+                                }
+
+                                .subexp .subexp-label tspan,
+                                .charset .charset-label tspan {
+                                    dominant-baseline: text-after-edge;
+                                }
+
+                                .subexp .subexp-box {
+                                    stroke: #908c83;
+                                    stroke-dasharray: 6, 2;
+                                    stroke-width: 2px;
+                                    fill-opacity: 0;
+                                }
+
+                                .quote {
+                                    fill: #908c83;
+                                }
+                            </style>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+            <div>Quelle: <a href="https://regexper.com/" target="_blank">regexper.com</a></div>
+        </div>
+
+        <div id="groupsOutput"></div>
+        <div id="testCasesContainer"></div>
+
+    </div>
+    <script src="parser/util.js" type="module"></script>
+    <script src="parser/javascript.js" type="module" defer></script>
+    <script src="main-admin.js"></script>
+    <script src="regexColoring.js" defer></script>
+</body>
+
+</html>

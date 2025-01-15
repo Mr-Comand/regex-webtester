@@ -165,7 +165,7 @@ function loadTask(taskFile) {
         .then(response => response.json())
         .then(task => {
             taskData = task;
-            // regexInput.value = ".*";
+            regexInput.value = task.regex;
             regexInput.placeholder = task.task;
             if (task.text) {
                 textInput.value = task.text;

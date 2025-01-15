@@ -173,3 +173,6 @@ pre {
 [onclick] {
     cursor: pointer;
 }
+input::placeholder {
+    color: gray; /* Change this to your desired color */
+}
