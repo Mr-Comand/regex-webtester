@@ -182,8 +182,8 @@ function loadTask(taskFile) {
                     .catch(error => console.error('Error loading text from link:', error));
             };
             let valid = highlightMatches();
+            checkSolution();
             if (valid) {
-                // checkSolution();
                 clearTimeout(renderTimeout);
                 renderTimeout = setTimeout(renderRegex, 250);
             }
