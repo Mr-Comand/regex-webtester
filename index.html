@@ -103,7 +103,6 @@
             color: #0e77e0;
             /* blue */
             font-weight: bold;
-
         }
 
         .regexColoring-highlight span.anyOf {
@@ -116,8 +115,6 @@
         .regexColoring-highlight span.anyOf.content {
             color: black;
             /* blue */
-
-
         }
 
         .regexColoring-highlight span.alternation {
@@ -179,7 +176,7 @@
                     <textarea id="textInput" placeholder="Enter text here" wrap="off"></textarea>
                 </div>
             </div>
-            <div id="renderedRegexContainer" style="display: none;">
+            <div id="renderedRegexContainer" style="display: none; max-height: 30vh;overflow: auto;">
                 <div class="svg">
                     <svg id="renderedRegex" height="0" width="0">
                         <defs>
@@ -264,7 +261,9 @@
                     </svg>
                 </div>
             </div>
+            <div>Quelle: <a href="https://regexper.com/" target="_blank">regexper.com</a></div>
         </div>
+
         <div id="groupsOutput"></div>
         <div id="testCasesContainer"></div>
 
