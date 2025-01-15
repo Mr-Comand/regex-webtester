@@ -6,6 +6,7 @@ const groupsOutput = document.getElementById('groupsOutput');
 const testCasesContainer = document.getElementById('testCasesContainer');
 const renderedRegexContainer = document.getElementById('renderedRegexContainer');
 const renderedRegex = document.getElementById('renderedRegex');
+const solutionButton = document.getElementById('solution');
 
 function syncScroll(event) {
     if (event.target === textInput) {
@@ -17,7 +18,11 @@ function syncScroll(event) {
 function highlightMatches() {
     const regexString = regexInput.value;
     const text = textInput.value;
-
+    if (!regexString) {
+        highlightedText.innerHTML = text;
+        groupsOutput.innerHTML = '';
+        return false;
+    };
     try {
         const regex = new RegExp(regexString, 'g');
         const highlighted = text.replace(regex, match => `<span class="highlight">${match}</span>`);
@@ -160,7 +165,7 @@ function loadTask(taskFile) {
         .then(response => response.json())
         .then(task => {
             taskData = task;
-            regexInput.value = task.regex;
+            // regexInput.value = ".*";
             if (task.text) {
                 textInput.value = task.text;
                 highlightedText.textContent = ''
@@ -177,7 +182,7 @@ function loadTask(taskFile) {
             };
             let valid = highlightMatches();
             if (valid) {
-                checkSolution();
+                // checkSolution();
                 clearTimeout(renderTimeout);
                 renderTimeout = setTimeout(renderRegex, 250);
             }
@@ -190,7 +195,7 @@ let renderTimeout;
 let isRendering = false;
 let renderedRegexContainerResetContent = renderedRegexContainer.innerHTML;
 function renderRegex() {
-    if (isRendering) return;
+    if (isRendering || !regexInput.value || regexInput.value==="" ) return;
     renderedRegexContainer.innerHTML = renderedRegexContainerResetContent;
     const progress = document.createElement('div');
     progress.className = 'progress';
@@ -229,3 +234,21 @@ textInput.addEventListener('input', () => {
 });
 
 textInput.addEventListener('scroll', syncScroll);
+
+
+solutionButton.addEventListener('click', () => {
+    const regex = taskData.regex; // Get the regex value
+    if (!regex) {
+        alert('Keine Aufgabe geladen.');
+        return;
+    }
+    // Copy to clipboard
+    navigator.clipboard.writeText(regex)
+        .then(() => {
+            alert('Lösung kopiert.');
+            console.log('Copied to clipboard:', regex);
+        })
+        .catch(err => {
+            console.error('Error copying to clipboard:', err);
+        });
+});
