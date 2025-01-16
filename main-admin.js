@@ -106,7 +106,9 @@ function checkSolution() {
         let testCaseResult = `<div class="testcase"><label>Test Case ${index + 1}:</label><pre>${testcase}</pre><button class="copy-btn">Copy to Text Input</button><div class="result">`;
         let allFine = true;
         let testCaseResults = "";
-
+        if(expectedMatches.length === 0) {
+            testCaseResult += `<span>No matches expected</span>`;
+        }
         if (userMatches.length === expectedMatches.length) {
             userMatches.forEach((userMatch, matchIndex) => {
                 const expectedMatch = expectedMatches[matchIndex];

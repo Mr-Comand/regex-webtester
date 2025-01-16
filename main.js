@@ -106,7 +106,9 @@ function checkSolution() {
         let testCaseResult = `<div class="testcase"><label>Test Case ${index + 1}:</label><pre>${testcase}</pre><button class="copy-btn">Copy to Text Input</button><div class="result">`;
         let allFine = true;
         let testCaseResults = "";
-
+        if(expectedMatches.length === 0) {
+            testCaseResult += `<span>No matches expected</span>`;
+        }
         if (userMatches.length === expectedMatches.length) {
             userMatches.forEach((userMatch, matchIndex) => {
                 const expectedMatch = expectedMatches[matchIndex];
@@ -132,12 +134,13 @@ function checkSolution() {
             testCaseResults += `<p style="color: red;">Number of matches is incorrect. Expected ${expectedMatches.length} but got ${userMatches.length}</p>`;
             allFine = false;
         }
-
+       
         if (allFine) {
             testCaseResult += `<p style="color: green;" class="allfine">All matches are correct</p></div>`;
         } else {
             testCaseResult += testCaseResults;
         }
+        
         testCaseResult += '</div></div>';
         output += testCaseResult;
 
