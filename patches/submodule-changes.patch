@@ -189,7 +189,7 @@ index a62e81a..60c8d0f 100644
  (function() {
    // Initialize the main page of the site. Functionality is kept in the
 diff --git a/src/js/parser/javascript.js b/src/js/parser/javascript.js
-index ec236c0..54609ff 100644
+index ec236c0..ddca628 100644
 --- a/src/js/parser/javascript.js
 +++ b/src/js/parser/javascript.js
 @@ -4,8 +4,8 @@
@@ -203,7 +203,26 @@ index ec236c0..54609ff 100644
  
  import util from '../util.js';
  import javascript from './javascript/parser.js';
-@@ -110,3 +110,4 @@ export default class Parser {
+@@ -36,7 +36,7 @@ export default class Parser {
+   set container(cont) {
+     this._container = cont;
+     this._container.innerHTML = [
+-      document.querySelector('#svg-container-base').innerHTML,
++      document.querySelector('#renderedRegexContainer').innerHTML,
+       this.options.keepContent ? this.container.innerHTML : ''
+     ].join('');
+     this._addClass('svg-container');
+@@ -90,7 +90,8 @@ export default class Parser {
+           .translate(10 - box.x, 10 - box.y));
+         svg.attr({
+           width: box.width + 20,
+-          height: box.height + 20
++          height: box.height + 20,
++          viewBox: `0 0 ${box.width + 20} ${box.height + 20}`
+         });
+       })
+       // Stop and remove loading indicator after render is totally complete.
+@@ -110,3 +111,4 @@ export default class Parser {
      return this.state.warnings;
    }
  }
