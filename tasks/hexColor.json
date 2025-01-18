@@ -1,0 +1,10 @@
+{
+    "task": "Check if the string is a valid hexadecimal color code, which starts with a '#' followed by exactly six hexadecimal digits (0-9, a-f, A-F).",
+    "regex": "^#([a-fA-F0-9]{6})$",
+    "testcases": [
+       "#a3c113",
+       "#FfA987",
+       "#12345",
+       "123456"
+    ]
+}

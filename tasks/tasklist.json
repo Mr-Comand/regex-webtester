@@ -1,0 +1,16 @@
+{
+    "tasks": [
+        [
+            "/tasks/eMail.json",
+            "E-Mail"
+        ],
+        [
+            "/tasks/hexColor.json",
+            "hex Color"
+        ],
+        [
+            "/tasks/URL.json",
+            "URL"
+        ]
+    ]
+}

@@ -1,0 +1,10 @@
+{
+    "task": "Check if the string is a valid URL. It should begin with 'http' or 'https', followed by '://', then a domain name and an optional path.",
+    "regex": "^(http|https)://[a-zA-Z0-9.-]+(?:/[a-zA-Z0-9./-]*)?$",
+    "testcases": [
+       "https://www.example.com",
+       "http://site.org/page",
+       "ftp://files.example.com",
+       "www.invalidurl.com"
+    ]
+}

@@ -1,9 +1,0 @@
-{
-    "task": "match the string 'asd' or 'asD' and capture the 'd' if it is present",
-    "regex": "as(d?D?)",
-    "testcases": [
-        "asd\naaaaa\nasD",
-        "asD",
-        "aaaaa"
-    ]
-}

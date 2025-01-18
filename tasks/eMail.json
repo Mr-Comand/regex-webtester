@@ -1,0 +1,10 @@
+{
+    "task": "Validate if the string is a valid email address. The email should start with letters or numbers, followed by an '@' symbol, then a domain name, and an optional '.com' or '.org' suffix.",
+    "regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.(com|org)$",
+    "testcases": [
+       "test@example.com",
+       "test123@domain.org",
+       "invalidemail.com",
+       "user@domain.net"
+    ]
+}
