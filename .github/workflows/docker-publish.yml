@@ -20,7 +20,7 @@ jobs:
         run: |
           git submodule update --init --recursive
           cd ./regexper-static
-          git apply --ignore-space-change --ignore-whitespace --reject ../patches/submodule-changes.patch
+          cat ../patches/submodule-changes.patch | git apply --ignore-space-change --ignore-whitespace --reject
 
       - name: Build Docker Image
         run: |
