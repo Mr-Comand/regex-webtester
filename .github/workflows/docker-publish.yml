@@ -19,8 +19,8 @@ jobs:
       - name: Apply patch to submodule
         run: |
           git submodule update --init --recursive
-          cd regexper-static
-          cat ../patches/submodule-changes.patch | git apply
+          cd ./regexper-static
+          git apply --ignore-space-change --ignore-whitespace --reject ../../patches/submodule-changes.patch
 
       - name: Build Docker Image
         run: |
