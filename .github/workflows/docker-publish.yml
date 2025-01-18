@@ -20,7 +20,7 @@ jobs:
         run: |
           git submodule update --init --recursive
           cd regexper-static
-          git apply ../patches/submodule-changes.patch
+          cat ../patches/submodule-changes.patch | git apply
 
       - name: Build Docker Image
         run: |
